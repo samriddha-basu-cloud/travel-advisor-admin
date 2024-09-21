@@ -8,7 +8,8 @@ import { PlusCircle, Edit2, Trash2 } from 'lucide-react';
 const Itineraries = () => {
   const [itineraries, setItineraries] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedItinerary, setSelectedItinerary] = useState(null);
+  const [selectedItinerary, setSelectedItinerary] = useState(null); // null for adding new
+  const [modalContentType, setModalContentType] = useState(''); // Track if showing 'description' or 'images'
 
   const fetchItineraries = async () => {
     const querySnapshot = await getDocs(collection(db, 'itinerary'));
@@ -28,8 +29,8 @@ const Itineraries = () => {
       await addDoc(collection(db, 'itinerary'), data);
       fetchItineraries();
     }
-    setShowModal(false);
-    setSelectedItinerary(null);
+    setShowModal(false); // Close the modal after submission
+    setSelectedItinerary(null); // Reset selectedItinerary
   };
 
   const handleDelete = async (id) => {
@@ -37,42 +38,53 @@ const Itineraries = () => {
     setItineraries(itineraries.filter((item) => item.id !== id));
   };
 
+  const handleShowMore = (itinerary, contentType) => {
+    setSelectedItinerary(itinerary);
+    setModalContentType(contentType); // Determine whether to show images or description
+    setShowModal(true);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Itineraries</h1>
+        
+        {/* Add Itinerary button */}
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setSelectedItinerary(null); // Reset selectedItinerary to null for adding
+            setShowModal(true); // Open the modal
+          }}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
         >
           <PlusCircle size={20} className="mr-2" />
           Add Itinerary
         </button>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {itineraries.map((itinerary) => (
           <div key={itinerary.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300 ease-in-out">
             <ItineraryCard
               itinerary={itinerary}
               onEdit={() => {
-                setSelectedItinerary(itinerary);
-                setShowModal(true);
+                setSelectedItinerary(itinerary); // Set the selected itinerary for editing
+                setShowModal(true); // Open the modal
               }}
               onDelete={handleDelete}
-              EditIcon={Edit2}
-              DeleteIcon={Trash2}
+              onShowMore={handleShowMore} // Pass the show more handler
             />
           </div>
         ))}
       </div>
+
+      {/* Show Modal when showModal is true */}
       {showModal && (
         <ItineraryModal
-          itinerary={selectedItinerary}
-          onClose={() => {
-            setShowModal(false);
-            setSelectedItinerary(null);
-          }}
-          onSave={handleAddOrEdit}
+          itinerary={selectedItinerary} // If selectedItinerary is null, we're adding a new itinerary
+          onClose={() => setShowModal(false)} // Close modal handler
+          onSave={handleAddOrEdit} // Handle Add or Edit
+          contentType={modalContentType} // Pass the content type ('description' or 'images')
         />
       )}
     </div>
