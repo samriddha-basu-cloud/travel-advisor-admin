@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         // Check if the user is authorized (email check)
-        if (user.email === 'samriddhabasu1234@gmail.com') {
+        if (user.email === 'samriddhabasu1234@gmail.com' || user.email === 'mytravelsguru@gmail.com') {
           console.log('Admin user logged in:', user.email); // Debugging
           setUser(user);
         } else {
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      if (result.user.email === 'samriddhabasu1234@gmail.com') {
+      if (result.user.email === 'samriddhabasu1234@gmail.com' || user.email === 'mytravelsguru@gmail.com') {
         console.log('Admin user successfully logged in:', result.user.email); // Debugging
         setUser(result.user);
         navigate('/');  // Navigate to home/dashboard after successful login
