@@ -1,0 +1,32 @@
+src/
+│
+├── components/        # Reusable UI components
+│   ├── ItineraryCard.js   # For displaying individual itineraries
+│   ├── QueryCard.js       # For displaying individual user queries
+│   └── AdminCard.js       # For displaying and managing admins
+│
+├── pages/             # Main pages of the admin panel
+│   ├── Dashboard.js       # Overview of the admin panel
+│   ├── Itineraries.js     # Page for adding/viewing/editing/deleting itineraries
+│   ├── Queries.js         # Page for viewing user queries
+│   └── Admins.js          # Page for assigning admins
+│
+├── context/           # Contexts for app-wide state management
+│   ├── AuthContext.js     # Authentication context (Google login)
+│   └── AdminContext.js    # Context for managing admins
+│
+├── hooks/             # Custom hooks for Firebase and other utilities
+│   ├── useAuth.js         # Hook for managing authentication
+│   ├── useItinerary.js    # Hook for fetching/managing itineraries
+│   └── useQueries.js      # Hook for fetching user queries
+│
+├── services/          # Firebase service handlers
+│   ├── firebaseConfig.js  # Firebase initialization and config
+│   ├── itineraryService.js # CRUD operations for itineraries
+│   ├── authService.js     # Google Auth and admin handling
+│   └── queryService.js    # Fetching user queries
+│
+├── modals/            # Reusable modals
+│   └── ItineraryModal.js  # Modal for adding/editing itineraries
+│
+└── App.js             # Main app entry point
