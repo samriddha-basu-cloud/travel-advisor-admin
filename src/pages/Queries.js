@@ -16,7 +16,7 @@ const Queries = () => {
       const queriesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setQueries(queriesList);
     } catch (error) {
-      console.error("Error fetching queries:", error);
+      console.error('Error fetching queries:', error);
     } finally {
       setIsLoading(false);
     }
@@ -27,11 +27,13 @@ const Queries = () => {
   }, []);
 
   const handleStatusUpdate = (id, newStatus) => {
-    setQueries(prevQueries =>
-      prevQueries.map(query =>
-        query.id === id ? { ...query, status: newStatus } : query
-      )
+    setQueries((prevQueries) =>
+      prevQueries.map((query) => (query.id === id ? { ...query, status: newStatus } : query))
     );
+  };
+
+  const handleDelete = (id) => {
+    setQueries((prevQueries) => prevQueries.filter((query) => query.id !== id));
   };
 
   const groupByEmail = (queries) => {
@@ -48,11 +50,11 @@ const Queries = () => {
   const groupedQueries = groupByEmail(queries);
 
   const toggleGroup = (email) => {
-    setExpandedGroups(prev => ({ ...prev, [email]: !prev[email] }));
+    setExpandedGroups((prev) => ({ ...prev, [email]: !prev[email] }));
   };
 
   const allQueriesChecked = (queries) => {
-    return queries.every(query => query.status === 'checked');
+    return queries.every((query) => query.status === 'checked');
   };
 
   return (
@@ -79,7 +81,7 @@ const Queries = () => {
         <div className="space-y-6">
           {Object.entries(groupedQueries).map(([email, queries]) => (
             <div key={email} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <div 
+              <div
                 className="p-4 bg-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center cursor-pointer"
                 onClick={() => toggleGroup(email)}
               >
@@ -110,7 +112,12 @@ const Queries = () => {
               {expandedGroups[email] && (
                 <div className="p-4 space-y-4">
                   {queries.map((query) => (
-                    <QueryCard key={query.id} query={query} onStatusUpdate={handleStatusUpdate} />
+                    <QueryCard
+                      key={query.id}
+                      query={query}
+                      onStatusUpdate={handleStatusUpdate}
+                      onDelete={handleDelete}  // Pass onDelete prop to handle deletion
+                    />
                   ))}
                 </div>
               )}

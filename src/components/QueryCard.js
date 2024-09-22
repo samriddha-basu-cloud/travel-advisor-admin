@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { db } from '../services/firebaseConfig';
-import { doc, updateDoc } from 'firebase/firestore';
-import { CheckCircle, XCircle, Phone, Mail, Users, Calendar, FileText } from 'lucide-react';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { CheckCircle, XCircle, Phone, Mail, Users, Calendar, FileText, Trash2 } from 'lucide-react';
 
-const QueryCard = ({ query, onStatusUpdate }) => {
+const QueryCard = ({ query, onStatusUpdate, onDelete }) => {
   const [status, setStatus] = useState(query.status || 'pending');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const toggleStatus = async () => {
     const newStatus = status === 'pending' ? 'checked' : 'pending';
     try {
       await updateDoc(doc(db, 'contactForms', query.id), {
-        status: newStatus
+        status: newStatus,
       });
       setStatus(newStatus);
       onStatusUpdate(query.id, newStatus);
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error('Error updating status:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteDoc(doc(db, 'contactForms', query.id));
+      onDelete(query.id);  // Notify parent component to remove the query from the list
+    } catch (error) {
+      console.error('Error deleting query:', error);
     }
   };
 
@@ -23,7 +33,7 @@ const QueryCard = ({ query, onStatusUpdate }) => {
   const statusText = status === 'checked' ? 'Checked' : 'Pending';
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-4 border border-gray-200">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-4 border border-gray-200 relative">
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-bold text-gray-800">{query.name}</h3>
@@ -54,10 +64,10 @@ const QueryCard = ({ query, onStatusUpdate }) => {
           <p className="text-gray-700">{query.notes}</p>
         </div>
       </div>
-      <div className="bg-gray-50 px-4 py-3 text-right">
+      <div className="bg-gray-50 px-4 py-3 flex justify-between">
         <button
           onClick={toggleStatus}
-          className={`px-4 py-2 rounded-md text-white font-semibold transition duration-300 ease-in-out flex items-center justify-center ml-auto ${
+          className={`px-4 py-2 rounded-md text-white font-semibold transition duration-300 ease-in-out flex items-center justify-center ${
             status === 'checked'
               ? 'bg-yellow-500 hover:bg-yellow-600'
               : 'bg-green-500 hover:bg-green-600'
@@ -75,7 +85,38 @@ const QueryCard = ({ query, onStatusUpdate }) => {
             </>
           )}
         </button>
+        {/* Trash Icon */}
+        <Trash2
+          size={24}
+          className="text-gray-500 hover:text-red-600 cursor-pointer"
+          onClick={() => setShowDeleteConfirm(true)}  // Show delete confirmation
+        />
       </div>
+
+      {/* Custom Alert Box */}
+      {showDeleteConfirm && (
+        <div className="absolute inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 shadow-md">
+            <p className="text-lg font-semibold text-gray-700 mb-4">
+              Are you sure you want to delete this query?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
