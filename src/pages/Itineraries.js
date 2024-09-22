@@ -3,7 +3,7 @@ import { db } from '../services/firebaseConfig';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import ItineraryModal from '../modals/ItineraryModal';
 import ItineraryCard from '../components/ItineraryCard';
-import { PlusCircle, Edit2, Trash2 } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 
 const Itineraries = () => {
   const [itineraries, setItineraries] = useState([]);
