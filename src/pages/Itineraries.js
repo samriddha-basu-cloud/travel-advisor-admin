@@ -3,13 +3,16 @@ import { db } from '../services/firebaseConfig';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import ItineraryModal from '../modals/ItineraryModal';
 import ItineraryCard from '../components/ItineraryCard';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, ArrowLeft } from 'lucide-react'; // Import ArrowLeft for the back button
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Itineraries = () => {
   const [itineraries, setItineraries] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedItinerary, setSelectedItinerary] = useState(null); // null for adding new
   const [modalContentType, setModalContentType] = useState(''); // Track if showing 'description' or 'images'
+
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   const fetchItineraries = async () => {
     const querySnapshot = await getDocs(collection(db, 'itinerary'));
@@ -48,19 +51,30 @@ const Itineraries = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Itineraries</h1>
-        
-        {/* Add Itinerary button */}
-        <button
-          onClick={() => {
-            setSelectedItinerary(null); // Reset selectedItinerary to null for adding
-            setShowModal(true); // Open the modal
-          }}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
-        >
-          <PlusCircle size={20} className="mr-2" />
-          Add Itinerary
-        </button>
       </div>
+        <div className="flex items-center space-x-4 mb-4">
+          {/* Back to Home button */}
+          <button
+            onClick={() => navigate('/')} // Navigate to home on button click
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+          >
+            <ArrowLeft size={20} className="mr-2" />
+            Home
+          </button>
+
+          {/* Add Itinerary button */}
+          <button
+            onClick={() => {
+              setSelectedItinerary(null); // Reset selectedItinerary to null for adding
+              setShowModal(true); // Open the modal
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+          >
+            <PlusCircle size={20} className="mr-2" />
+            Add Itinerary
+          </button>
+        </div>
+      
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {itineraries.map((itinerary) => (

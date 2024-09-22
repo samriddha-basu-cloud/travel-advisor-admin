@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
-import { Users, UserPlus, Trash2, Mail } from 'lucide-react';
+import { Users, UserPlus, Trash2, Mail, ArrowLeft } from 'lucide-react'; // Import ArrowLeft for the back button
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Admins = () => {
   const [admins, setAdmins] = useState([]);
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   const fetchAdmins = async () => {
     setIsLoading(true);
@@ -48,11 +51,21 @@ const Admins = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 flex items-center">
-        <Users className="mr-2" size={28} />
-        Manage Admins
-      </h1>
-      
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
+          <Users className="mr-2" size={28} />
+          Manage Admins
+        </h1>
+        
+        <button
+          onClick={() => navigate('/')} // Navigate to home on button click
+          className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+        >
+          <ArrowLeft className="mr-2" size={20} />
+          Home
+        </button>
+      </div>
+
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
         <h2 className="text-lg md:text-xl font-semibold mb-4">Add New Admin</h2>
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">

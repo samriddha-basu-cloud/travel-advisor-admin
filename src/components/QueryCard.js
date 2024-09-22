@@ -88,7 +88,7 @@ const QueryCard = ({ query, onStatusUpdate, onDelete }) => {
         {/* Trash Icon */}
         <Trash2
           size={24}
-          className="text-gray-500 hover:text-red-600 cursor-pointer"
+          className="text-red-400 hover:text-red-600 cursor-pointer"
           onClick={() => setShowDeleteConfirm(true)}  // Show delete confirmation
         />
       </div>

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { getDocs, collection } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 import QueryCard from '../components/QueryCard';
-import { MessageSquare, RefreshCw, User, Phone, Mail, ChevronDown, ChevronUp } from 'lucide-react';
+import { MessageSquare, RefreshCw, User, Phone, Mail, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; 
 
 const Queries = () => {
   const [queries, setQueries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedGroups, setExpandedGroups] = useState({});
+
+  const navigate = useNavigate(); 
 
   const fetchQueries = async () => {
     setIsLoading(true);
@@ -64,14 +67,23 @@ const Queries = () => {
           <MessageSquare className="mr-2" size={32} />
           User Queries
         </h1>
-        <button
-          onClick={fetchQueries}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
-          disabled={isLoading}
-        >
-          <RefreshCw className={`mr-2 ${isLoading ? 'animate-spin' : ''}`} size={20} />
-          Refresh
-        </button>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => navigate('/')} // Navigate to home on button click
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+          >
+            <ArrowLeft className="mr-2" size={20} />
+            Home
+          </button>
+          <button
+            onClick={fetchQueries}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out flex items-center"
+            disabled={isLoading}
+          >
+            <RefreshCw className={`mr-2 ${isLoading ? 'animate-spin' : ''}`} size={20} />
+            Refresh
+          </button>
+        </div>
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
